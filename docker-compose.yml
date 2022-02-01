@@ -5,26 +5,28 @@ services:
     image: postgres:12
     restart: always
     volumes:
-      - "/data/khala:/var/lib/postgresql/data" # need to store at /data
+      - "./${chain}/data/database:/var/lib/postgresql/data" # need to store at /data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
 
   indexer:
     image: subsquid/hydra-indexer:5
     restart: unless-stopped
     environment:
-      - WORKERS_NUMBER=50
-      - DB_NAME=khala-archive
+      - WORKERS_NUMBER=5
+      - DB_NAME=${chain}-archive
       - DB_HOST=db
       - DB_USER=postgres
       - DB_PASS=postgres
       - DB_PORT=5432
       - REDIS_URI=redis://redis:6379/0
-      - WS_PROVIDER_ENDPOINT_URI=wss://khala.api.onfinality.io/public-ws
+      - WS_PROVIDER_ENDPOINT_URI=wss://${chain}.api.onfinality.io/public-ws
       - BUNDLE_TYPES=/configs/typesBundle.json
     volumes:
-      - "./typesBundle.json:/configs/typesBundle.json"
+      - "./${chain}/typesBundle.json:/configs/typesBundle.json"
     depends_on:
       - db
       - redis
@@ -43,7 +45,7 @@ services:
       - "4010:8080"
     environment:
       - DEV_MODE=true
-      - DB_NAME=khala-archive
+      - DB_NAME=${chain}-archive
       - DB_HOST=db
       - DB_USER=postgres
       - DB_PASS=postgres
@@ -71,16 +73,16 @@ services:
       - '80:80'
       - '443:443'
     volumes:
-      - ./data/nginx:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ./${chain}/data/nginx:/etc/nginx/conf.d
+      - ./${chain}/data/certbot/conf:/etc/letsencrypt
+      - ./${chain}/data/certbot/www:/var/www/certbot
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     restart: unless-stopped
 
   certbot:
     image: certbot/certbot
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ./${chain}/data/certbot/conf:/etc/letsencrypt
+      - ./${chain}/data/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 

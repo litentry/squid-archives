@@ -1,27 +1,35 @@
 # Squid Archives
 
-## Configuring a server for an archive
-
-### Requirements
-
-- git
-- docker engine https://docs.docker.com/engine/install/ubuntu/
-
-### Process
+## Preparing the server
 
 ```sh
-cd /srv
-mkdir www
-chown -R {username}:docker www
-cd www
-git clone https://github.com/litentry/squid-archives.git
-cd squid-archives/{chain}
-./init-letsencrypt.sh
-docker-compose up -d
+wget -q -O - https://raw.githubusercontent.com/litentry/squid-archives/master/init.sh | bash
+cd /srv/www/squid-archives
+./init-letsencypt.sh
 ```
 
-### Domains
+## Importing from backup
+
+Replace {chain} and {file} below
+```shell script
+sudo apt install pv postgresql-client-12 postgresql-client-common
+mkdir /data/archive
+chain={chain} docker-compose up -d db
+psql -h 0.0.0.0 -U postgres -c "CREATE DATABASE \"{chain}-archive\""
+pv {file}.sql | psql -h 0.0.0.0 -U postgres -d {chain}-archive
+```
+
+## Running the archiver
+
+```shell script
+chain={chain} docker-compose up -d
+```
+Grab a coffee to celebrate! 
+
+## Domains
 
 You can check the status on the domain configured with nginx:
 
 https://{chain}-squid-archive.litentry.io/ e.g. https://polkadot-squid-archive.litentry.io/
+
+
