@@ -76,8 +76,6 @@ services:
       - ./${chain}/data/nginx:/etc/nginx/conf.d
       - ./${chain}/data/certbot/conf:/etc/letsencrypt
       - ./${chain}/data/certbot/www:/var/www/certbot
-    environment:
-      - NGINX_SERVER_NAME=${chain}-squid-archive.litentry.io
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     restart: unless-stopped
 
