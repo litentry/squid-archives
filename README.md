@@ -3,7 +3,7 @@
 ## Preparing the server
 
 ```sh
-wget -q -O - https://raw.githubusercontent.com/litentry/squid-archives/master/init.sh | bash
+wget -q -O - https://raw.githubusercontent.com/litentry/squid-archives/main/init.sh | bash
 cd /srv/www/squid-archives
 ./init-letsencypt.sh
 ```
