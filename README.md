@@ -19,6 +19,7 @@ sudo apt install pv postgresql-client-12 postgresql-client-common
 sudo chown -R {user}:docker /data
 mkdir /data/archive
 cd /srv/www/squid-archives/
+ln -s /data/archive {chain}/data/database
 chain={chain} docker-compose up -d db
 psql -h 0.0.0.0 -U postgres -c "CREATE DATABASE \"{chain}-archive\""
 # run the next command from within tmux as it can take a long time
