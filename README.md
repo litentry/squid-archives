@@ -16,9 +16,12 @@ chain={chain} ./init-letsencrypt.sh
 Replace {chain} and {file} below
 ```shell script
 sudo apt install pv postgresql-client-12 postgresql-client-common
+sudo chown -R {user}:docker /data
 mkdir /data/archive
+cd /srv/www/squid-archives/
 chain={chain} docker-compose up -d db
 psql -h 0.0.0.0 -U postgres -c "CREATE DATABASE \"{chain}-archive\""
+# run the next command from within tmux as it can take a long time
 pv {file}.sql | psql -h 0.0.0.0 -U postgres -d {chain}-archive
 ```
 
