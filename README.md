@@ -4,8 +4,11 @@
 
 ```sh
 wget -q -O - https://raw.githubusercontent.com/litentry/squid-archives/main/init.sh | bash
+
+# reload terminal session here to enable new docker group for the current user
+
 cd /srv/www/squid-archives
-./init-letsencrypt.sh
+chain={chain} ./init-letsencrypt.sh
 ```
 
 ## Importing from backup

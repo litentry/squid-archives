@@ -7,7 +7,7 @@ fi
 
 domains=(${chain}-squid-archive.litentry.io)
 rsa_key_size=4096
-data_path="./data/certbot"
+data_path="./${chain}/data/certbot"
 email="" # Adding a valid address is strongly recommended
 staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
@@ -28,7 +28,7 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
 fi
 
 echo "### Starting nginx ..."
-docker run --name "nginx-certbot-challenge" -v "/$(pwd)/data/nginx/certbot.conf:/etc/nginx/conf.d/certbot.conf" -v "$(pwd)/data/certbot/www:/var/www/certbot" -p 80:80 --rm -d nginx:1.15-alpine
+docker run --name "nginx-certbot-challenge" -v "./${chain}/data/nginx/certbot.conf:/etc/nginx/conf.d/certbot.conf" -v "./${chain}/data/certbot/www:/var/www/certbot" -p 80:80 --rm -d nginx:1.15-alpine
 echo
 
 echo "### Deleting any existing certificate for $domains ..."
