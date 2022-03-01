@@ -10,3 +10,8 @@ scrape_configs:
   - job_name: 'cadvisor'
     static_configs:
       - targets: ['cadvisor:8080']
+
+  - job_name: 'indexer-status-service'
+    metrics_path: /status
+    static_configs:
+      - targets: ['indexer-status-service:8081']
